@@ -16,7 +16,11 @@ void    *ft_realloc(void *ptr, size_t size)
 {
 	void	*new_alloc;
 	int		i;
+	unsigned char *n;
+	unsigned char *p;
 
+	n = new_alloc;
+	p = ptr;
 	i = 0;
 	if (!ptr)
 		return (NULL);
@@ -24,7 +28,7 @@ void    *ft_realloc(void *ptr, size_t size)
 		return (NULL);
 	while (i < size)
 	{
-		new_alloc[i] = ptr[i];
+		*(n + i) = *(p + i);
 		++i;
 	}
 	free(ptr);
