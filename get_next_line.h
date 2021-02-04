@@ -17,8 +17,11 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+# define BUFFER_SIZE 32
 
 int		get_next_line(int fd, char **line);
 void	*ft_realloc(void *ptr, size_t size);
+size_t	ft_strlen(const char *s);
+
 
 #endif

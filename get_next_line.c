@@ -14,53 +14,52 @@
 
 int get_next_line(int fd, char **line)
 {
-	int i;
-	char **buff;
+	static char	*new_line;
+	size_t		n;
+	size_t		i;
+	char		*buff;
 
-	if (!(buff = (char *)malloc(sizeof(char))))
-		return (0);
-	read(fd, buff, 1);
+	if(fd <= 0 || !*line || BUFFER_SIZE <= 0)
+		return (-1);
+	if (!(buff = malloc(sizeof(char *) * (BUFFER_SIZE + 1))))
+		return (-1);
+	if (read(fd, buff, BUFFER_SIZE) == -1)
+	{
+		free(buff);
+		return (-1);
+	}
+	buff[BUFFER_SIZE] = '\0';
 	i = 0;
-	while (buff[i + 1] != '\0')
+	n = ft_strlen(buff);
+	if (!(new_line = malloc(n)))
+		return (-1);
+		printf("buff - %s\n", buff);
+	while (i < n)
 	{
-		read(fd, buff, 1 + i);
+		*(new_line + i) = *(buff + i);
 		++i;
-		ft_realloc(buff, i);
 	}
-	if (!(buff = (char *)malloc(sizeof(char **) * i)))
-		return (0);
+	*(new_line + i) = '\0';
+	free (buff);
+	printf("new - %s\n", new_line);
 	i = 0;
-	while (buff[i] != '\n' || buff[i] != '\0')
+	while (new_line[i] != '\n' || new_line[i] != '\0')
 	{
-		line[i] = buff[i];
+		*(line + i) = *(new_line + i);
 		++i;
 	}
-	if (buff[i] == '\n')
-	{
-		line[i] = '\n';
-		i = 1;
-	}
-	else if (buff[i] == '\0')
-	{
-		line[i] = '\0';
-		i = 0;
-	}
-	else
-		i = -1;
-	return (i);
+	// *(line + i) = '\0';
+		//printf("final - %s\n", line);
+
+	return (0);
 }
 
 int main()
 {
-	char **buff;
-	buff = malloc(sizeof(char **) * 100);
+	char *buff;
 	int a = open("test.txt", 0666);
-	read(a, buff, 6);
-	printf("%s\n", buff);
+	int n = get_next_line(a, &buff);
 
-	int n = get_next_line(a, buff);
-	printf("%s\n", buff);
-
-	printf("%d\n", n);
-	return (0);
+	// printf("%d\n", n);
+	return (n);
 }

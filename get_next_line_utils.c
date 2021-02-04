@@ -14,18 +14,19 @@
 
 void    *ft_realloc(void *ptr, size_t size)
 {
-	void	*new_alloc;
-	int		i;
-	unsigned char *n;
-	unsigned char *p;
+	void			*new_alloc = NULL;
+	size_t			i;
+	unsigned char 	*n;
+	unsigned char 	*p;
 
 	n = new_alloc;
 	p = ptr;
 	i = 0;
 	if (!ptr)
-		return (NULL);
-	if (!(new_alloc = (void *)malloc(sizeof(*new_alloc) * size)))
-		return (NULL);
+		return ((void *)malloc(size));
+	if (size <= sizeof(ptr))
+		return (ptr);
+	new_alloc = (void *)malloc(size);
 	while (i < size)
 	{
 		*(n + i) = *(p + i);
@@ -33,4 +34,14 @@ void    *ft_realloc(void *ptr, size_t size)
 	}
 	free(ptr);
 	return (new_alloc);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t i;
+
+	i = 0;
+	while (*(s + i))
+		++i;
+	return (i);
 }
