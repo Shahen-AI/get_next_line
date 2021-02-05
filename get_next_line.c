@@ -12,12 +12,34 @@
 
 #include "get_next_line.h"
 
-int get_next_line(int fd, char **line)
+char	*nxtl(char *new_line, int st_i)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	if (!new_line)
+		return (NULL);
+	while (new_line[i] != '\n' && new_line[i] != '\0')
+		++i;
+	if (!(line = malloc(sizeof(char) * (i + 1))))
+		return (NULL);
+	while (new_line[st_i] != '\n' && new_line[st_i] != '\0')
+	{
+		line[st_i] = new_line[st_i];
+		++st_i;
+	}
+	line[st_i] = '\0';
+	return (line);
+}
+
+int		get_next_line(int fd, char **line)
 {
 	static char	*new_line;
 	size_t		n;
 	size_t		i;
 	char		*buff;
+	static int	st_i;
 
 	if(fd <= 0 || !*line || BUFFER_SIZE <= 0)
 		return (-1);
@@ -33,7 +55,6 @@ int get_next_line(int fd, char **line)
 	n = ft_strlen(buff);
 	if (!(new_line = malloc(n)))
 		return (-1);
-		printf("buff - %s\n", buff);
 	while (i < n)
 	{
 		*(new_line + i) = *(buff + i);
@@ -41,16 +62,9 @@ int get_next_line(int fd, char **line)
 	}
 	*(new_line + i) = '\0';
 	free (buff);
-	printf("new - %s\n", new_line);
-	i = 0;
-	while (new_line[i] != '\n' || new_line[i] != '\0')
-	{
-		*(line + i) = *(new_line + i);
-		++i;
-	}
-	// *(line + i) = '\0';
-		//printf("final - %s\n", line);
-
+	st_i = 0;
+	*line = nxtl(new_line, st_i);
+	printf("%d\n", st_i);
 	return (0);
 }
 
@@ -59,6 +73,8 @@ int main()
 	char *buff;
 	int a = open("test.txt", 0666);
 	int n = get_next_line(a, &buff);
+	get_next_line(a, &buff);
+
 
 	// printf("%d\n", n);
 	return (n);
