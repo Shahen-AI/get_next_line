@@ -22,6 +22,6 @@
 int		get_next_line(int fd, char **line);
 void	*ft_realloc(void *ptr, size_t size);
 size_t	ft_strlen(const char *s);
-
+int		ft_output(char *new_line, int st_i);
 
 #endif
