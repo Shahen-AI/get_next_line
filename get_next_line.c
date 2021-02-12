@@ -12,37 +12,43 @@
 
 #include "get_next_line.h"
 
-void		go_to_next(char **new_line, int st_i)
-{
-	*new_line += (st_i + 1);
-}
+// void		go_to_next(char **new_line, int st_i)
+// {
+// 	*new_line += (st_i + 1);
+// }
 
-char		*get_line(char *new_line, int st_i)
+char	*get_line(char *str, int len)
 {
-	char	*line;
+	char	*temp;
 	int 	i;
+	int		n;
 
+	n = ft_strlen(str);
 	i = 0;
-	if (!(line = malloc(sizeof(char) * (1 + st_i))))
-		return (0);
-	while (i < st_i)
+	if (!(temp = malloc(n - len + 1)))
+		return (NULL);
+	while (str[i + len])
 	{
-		line[i] = new_line[i];
+		temp[i] = str[i + len];
 		++i;
 	}
-	line[st_i] = '\0';
-	return (line);
+	temp[i] = '\0';
+	free(str);
+	return (temp);
 }
 
-static int	nxtl(char *new_line, int st_i)
+int		bsn_len(char *str)
 {
-	char	*line;
+	int i;
 
-	while (new_line[st_i] != '\n' && new_line[st_i] != '\0')
+	i = 0;
+	while (str[i])
 	{
-		++st_i;
+		if (str[i] == '\n')
+			return (i);
+		++i;
 	}
-	return (st_i);
+	return (0);
 }
 
 int		ft_output(char *new_line, int st_i)
@@ -58,35 +64,28 @@ int		ft_output(char *new_line, int st_i)
 int		get_next_line(int fd, char **line)
 {
 	static char	*new_line;
-	size_t		n;
-	size_t		i;
-	char		buff[BUFFER_SIZE];
-	static int	st_i;
+	char		buff[BUFFER_SIZE + 1];
 	ssize_t		ret;
+	int			len;
 
-	if(fd < 0 || !*line || BUFFER_SIZE <= 0)
+	if(fd < 0 || BUFFER_SIZE <= 0)
 		return (-1);
-	if (!new_line && (ret = read(fd, buff, BUFFER_SIZE)) > 0)
+	// if(!(buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
+	// 	return (-1);
+	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[ret] = '\0';
-		i = 0;
-		n = ft_strlen(buff);
-		if (!(new_line = malloc(n + 1)))
-			return (-1);
-		while (i < n)
+		printf("TEST");
+		new_line = ft_strjoin(new_line, buff);
+		if ((len = bsn_len(new_line)) != 0)
 		{
-			new_line[i] = buff[i];
-			++i;
+			*line = ft_substr(new_line, 0, len);
+			new_line = get_line(new_line, len);
+			break ;
 		}
-		new_line[i + 1] = '\0';
 	}
-	st_i = 0;
-	st_i = nxtl(new_line, st_i);
-	*line = get_line(new_line, st_i);
-	int	k = ft_output(new_line, st_i);
-	go_to_next(&new_line, st_i);
-	// printf("sti - %d ===   %s\n", st_i, new_line);
-	return (k);
+	// free(buff);
+	return (0);
 }
 
 int main()
@@ -95,16 +94,21 @@ int main()
 	int a = open("test.txt", 0666);
 	int n = get_next_line(a, &buff);
 	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	
+	// n = get_next_line(a, &buff);
+	// printf("main(return - %d) - %s\n", n, buff);
+	// n = get_next_line(a, &buff);
+	// printf("main(return - %d) - %s\n", n, buff);
+	// n = get_next_line(a, &buff);
+	// printf("main(return - %d) - %s\n", n, buff);
+	// n = get_next_line(a, &buff);
+	// printf("main(return - %d) - %s\n", n, buff);
+	// n = get_next_line(a, &buff);
+	// printf("main(return - %d) - %s\n", n, buff);
+
+	// i = 0;
+	// while(i<10){
+	// 	printf("%d - %d\n", i, arr[i]);
+	// 	++i;}
+	// free(arr);
 	return (0);
 }
