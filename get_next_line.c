@@ -17,6 +17,8 @@ int		bsn_len(char *str)
 	int i;
 
 	i = 0;
+	if (!str)
+		return (0);
 	if (str[0] == '\n')
 		return (1);
 	while (str[i] && str[i] != '\n')
@@ -32,6 +34,8 @@ char	*get_line(char *str, int len)
 
 	n = ft_strlen(str);
 	i = 0;
+	if (!str)
+		return ('\0');
 	if (!(temp = malloc(n - len)))
 		return (NULL);
 	if (str[i] == '\n')
@@ -67,6 +71,10 @@ int		ft_output(char *new_line, int st_i)
 	int i;
 
 	i = 0;
+	if (!new_line)
+		return (0);
+	if (new_line[0] == '\n')
+		return (1);
 	if (new_line[st_i] == '\n')
 		i = 1;
 	return (i);
@@ -78,7 +86,9 @@ int		get_next_line(int fd, char **line)
 	char		*buff;
 	ssize_t		ret;
 	int			len;
+	int 		out;
 
+	out = 0;
 	if(fd < 0 || BUFFER_SIZE <= 0)
 		return (-1);
 	if(!(buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
@@ -91,9 +101,8 @@ int		get_next_line(int fd, char **line)
 			break ;
 	}
 	len = bsn_len(new_line);
-	*line = ft_substr(new_line, 0, len);
-	int out = 0;
 	out = ft_output(new_line, len);
+	*line = ft_substr(new_line, 0, len);
 	new_line = get_line(new_line, len);
 	free(buff);
 	return (out);
@@ -103,22 +112,13 @@ int main()
 {
 	char *buff;
 	int a = open("test.txt", 0666);
-	int n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
-	n = get_next_line(a, &buff);
-	printf("main(return - %d) - %s\n", n, buff);
+	int n = 1;
 
+	while (n)
+	{
+		n = get_next_line(a, &buff);
+		printf("main(return - %d) - %s\n", n, buff);
+	}
+	
 	return (0);
 }

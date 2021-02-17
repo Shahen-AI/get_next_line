@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
-# define BUFFER_SIZE 2
+# define BUFFER_SIZE 5
 
 int		get_next_line(int fd, char **line);
 char	*ft_strjoin(char const *s1, char const *s2);
