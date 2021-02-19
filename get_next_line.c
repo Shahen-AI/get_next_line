@@ -19,35 +19,9 @@ int		bsn_len(char *str)
 	i = 0;
 	if (!str)
 		return (0);
-	if (str[0] == '\n')
-		return (1);
-	while (str[i] && str[i] != '\n')
+	while (str && str[i] && str[i] != '\n')
 		++i;
 	return (i);
-}
-
-char	*get_line(char *str, int len)
-{
-	char	*temp;
-	int 	i;
-	int		n;
-
-	n = ft_strlen(str);
-	i = 0;
-	if (!str)
-		return ('\0');
-	if (!(temp = malloc(n - len)))
-		return (NULL);
-	if (str[i] == '\n')
-		--len;
-	while (str[len + i + 1])
-	{
-		temp[i] = str[i + len + 1];
-		++i;
-	}
-	temp[i] = '\0';
-	free(str);
-	return (temp);
 }
 
 int		bsn_check(char *str)
@@ -55,12 +29,10 @@ int		bsn_check(char *str)
 	int i;
 
 	i = 0;
-	if (str[0] == '\n')
-		return (1);
 	while (str[i])
 	{
 		if (str[i] == '\n')
-			return (i);
+			return (1);
 		++i;
 	}
 	return (0);
@@ -73,8 +45,6 @@ int		ft_output(char *new_line, int st_i)
 	i = 0;
 	if (!new_line)
 		return (0);
-	if (new_line[0] == '\n')
-		return (1);
 	if (new_line[st_i] == '\n')
 		i = 1;
 	return (i);
@@ -86,12 +56,11 @@ int		get_next_line(int fd, char **line)
 	char		*buff;
 	ssize_t		ret;
 	int			len;
-	int 		out;
+	int			out;
 
 	out = 0;
-	if(fd < 0 || BUFFER_SIZE <= 0)
-		return (-1);
-	if(!(buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
+	if(fd < 0 || BUFFER_SIZE <= 0 ||
+	(!(buff = malloc(sizeof(char) * BUFFER_SIZE + 1))))
 		return (-1);
 	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
@@ -100,25 +69,28 @@ int		get_next_line(int fd, char **line)
 		if (bsn_check(new_line))
 			break ;
 	}
-	len = bsn_len(new_line);
-	out = ft_output(new_line, len);
-	*line = ft_substr(new_line, 0, len);
-	new_line = get_line(new_line, len);
 	free(buff);
+	if (ret < 0)
+		return (-1);
+	len = bsn_len(new_line);
+	*line = ft_substr(new_line, len);
+	out = ft_output(new_line, len);
+	new_line = get_line(new_line, len);
 	return (out);
 }
 
-int main()
-{
-	char *buff;
-	int a = open("test.txt", 0666);
-	int n = 1;
+// int main()
+// {
+// 	char *buff;
+// 	int a = open("1_newline", 0666);
+// 	int n = 1;
+// 	int i = 0;
 
-	while (n)
-	{
-		n = get_next_line(a, &buff);
-		printf("main(return - %d) - %s\n", n, buff);
-	}
-	
-	return (0);
-}
+// 	while (n)
+// 	{
+// 		++i;
+// 		n = get_next_line(a, &buff);
+// 		printf("%d - main(return - %d) - %s$\n", i, n, buff);
+// 	}
+// 	return (0);
+// }

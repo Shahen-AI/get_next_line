@@ -24,91 +24,69 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *string, char *buff)
 {
 	char	*res;
-	size_t	n;
-	size_t	m;
+	int		i;
+	int		j;
 
-	n = ft_strlen(s1);
-	m = ft_strlen(s2);
-	if (!(res = (char *)malloc((n + m + 1) * sizeof(*res))))
+	if (!(res = malloc(sizeof(char) *
+					(ft_strlen(string) + ft_strlen(buff) + 1))))
 		return (NULL);
-	ft_strlcpy(res, s1, n + 1);
-	ft_strlcat(res, s2, m + n + 1);
+	i = 0;
+	j = 0;
+	if (string)
+		while (string[i])
+			res[j++] = string[i++];
+	i = 0;
+	if (buff)
+		while (buff[i])
+			res[j++] = buff[i++];
+	res[j] = '\0';
+	free(string);
 	return (res);
 }
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
+char	*ft_substr(char const *s, int len)
 {
-	size_t i;
-	size_t len;
+	char	*res;
+	int		i;
 
-	len = 0;
 	i = 0;
-	if (!src || !dest)
-		return (0);
-	if (size > 1)
+	if (!(res = (char *)malloc(len + 1)))
+		return (NULL);
+	while (i < len)
 	{
-		while (i < (size - 1) && *(src + i))
-		{
-			*(dest + i) = *(src + i);
-			++i;
-		}
-		*(dest + i) = '\0';
-	}
-	while (*(src + len))
-		++len;
-	return (len);
-}
-
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
-{
-	size_t i;
-	size_t d_len;
-	size_t s_len;
-
-	d_len = 0;
-	i = 0;
-	s_len = 0;
-	while (*(dest + d_len) && d_len < size)
-		++d_len;
-	while (*(src + s_len))
-		++s_len;
-	while (d_len + i + 1 < size && *(src + i))
-	{
-		*(dest + d_len + i) = *(src + i);
+		res[i] = s[i];
 		++i;
 	}
-	if (i != 0)
-		*(dest + d_len + i) = '\0';
-	return (s_len + d_len);
+	res[len] = '\0';
+	return (res);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*get_line(char *str, int len)
 {
-	char	*res;
-	size_t	index;
-	size_t	s_len;
-	size_t	over_len;
+	char	*temp;
+	int 	i;
+	int		n;
 
-	index = 0;
-	over_len = ft_strlen(s + start);
-	if (len > over_len)
-		len = over_len;
-	s_len = ft_strlen(s);
-	if (!(res = (char *)malloc((len + 1) * sizeof(*res))))
+	n = ft_strlen(str);
+	i = 0;
+	if (!str)
 		return (NULL);
-	if (!s || s[0] == '\0' || s[0] == '\n')
+	if (str[len] == '\0')
 	{
-		res[0] = '\0';
-		return (res);
+		free(str);
+		return (NULL);
 	}
-	while (index < len && start + index < s_len)
+	if (!(temp = malloc(n - len + 1)))
+		return (NULL);
+	while (str[len + i + 1] != '\0')
 	{
-		*(res + index) = *(s + start + index);
-		++index;
+		temp[i] = str[i + len + 1];
+		++i;
 	}
-	*(res + len) = '\0';
-	return (res);
+	temp[i] = '\0';
+	free(str);
+	return (temp);
 }
